@@ -1,0 +1,188 @@
+import {
+  BadRequestException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
+import {
+  BanUserDto,
+  CreateUserDto,
+  LoginUserDto,
+  UnbanUserDto,
+} from './dto/create-user.dto';
+import { SupabaseService } from '../supabase/supabase.service';
+import bcrypt from 'bcrypt';
+import { ApiResponse } from '../common/response/api-response';
+
+@Injectable()
+export class UsersService {
+  constructor(private readonly supabaseService: SupabaseService) {}
+
+  async signup(createUserDto: CreateUserDto) {
+    const { full_name, email, password, role } = createUserDto;
+    const supabase = this.supabaseService.getClient();
+    const finalRole = role || 'user';
+
+    // Insert vào bảng profiles
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        // Lưu các thông tin bổ sung vào metadata
+        data: { full_name, role: finalRole },
+      },
+    });
+
+    if (error) {
+      throw new BadRequestException(error.message);
+    }
+
+    return {
+      success: true,
+      code: 201,
+      message: 'Thêm user thành công',
+      data: data,
+    };
+  }
+
+  async signin(loginUserDto: LoginUserDto) {
+    const { email, password } = loginUserDto;
+    const supabase = this.supabaseService.getClient();
+
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+
+    if (error)
+      throw new UnauthorizedException('Thông tin đăng nhập không chính xác');
+
+    return {
+      success: true,
+      code: 200,
+      message: 'Đăng nhập thành công',
+      token: data.session?.access_token,
+    };
+  }
+
+  async getProfile(user: any) {
+    const supabase = this.supabaseService.getClient();
+    const { data, error } = await supabase
+      .from('profiles')
+      .select('*')
+      .eq('id', user.id)
+      .maybeSingle();
+    console.log(user.id, error, data);
+    return {
+      success: true,
+      code: 200,
+      message: 'Lấy thông tin cá nhân thành công',
+      data: data,
+    };
+  }
+
+  async findAll() {
+    const supabase = this.supabaseService.getClient();
+    const { data, error } = await supabase.from('profiles').select('*');
+    if (error) {
+      throw new BadRequestException('Lấy danh sách user khônng thành công');
+    }
+    return ApiResponse.success(data, 'Lấy Danh sách user thành công', 200);
+  }
+
+  findOne(id: number) {
+    return `This action returns a #${id} user`;
+  }
+
+  async ban(banUserDTO: BanUserDto) {
+    const supabase = this.supabaseService.getClient();
+    let duration = 0;
+
+    if (
+      banUserDTO.type == 'day' ||
+      banUserDTO.type == 'days' ||
+      banUserDTO.type == 'd' ||
+      banUserDTO.type == 'D' ||
+      banUserDTO.type == 'DAY'
+    ) {
+      duration = banUserDTO.time * 24;
+    } else if (
+      banUserDTO.type == 'hour' ||
+      banUserDTO.type == 'hours' ||
+      banUserDTO.type == 'h' ||
+      banUserDTO.type == 'H' ||
+      banUserDTO.type == 'HOUR'
+    ) {
+      duration = banUserDTO.time;
+    }
+
+    const { data: banData, error: banError } =
+      await supabase.auth.admin.updateUserById(banUserDTO.id, {
+        ban_duration: duration + 'h',
+      });
+
+    if (banError) {
+      throw new BadRequestException(
+        `Không thể khóa tài khoản: ${banError.message}`,
+      );
+    }
+
+    const { data, error: profileError } = await supabase
+      .from('profiles')
+      .update({ is_active: false })
+      .eq('id', banUserDTO.id)
+      .select();
+
+    if (profileError) {
+      throw new BadRequestException(
+        `Không thể cập nhật profile: ${profileError.message}`,
+      );
+    }
+
+    // @ts-ignore
+    const dateTmp = new Date(banData.user?.banned_until)
+    const date = dateTmp.toLocaleString('vi-VN', { timeZone: 'Asia/Ho_Chi_Minh' });
+    const formData = {
+      user_id: banData.user?.id,
+      email: banData.user?.email,
+      ban_duration: date || banData.user?.banned_until,
+      reason: banUserDTO.reason
+    };
+    return ApiResponse.success(formData, 'Khóa tài khoản thành công', 200);
+  }
+
+  async unban(unbanUserDto: UnbanUserDto) {
+    const supabase = this.supabaseService.getClient();
+
+    const { error: unbanError } = await supabase.auth.admin.updateUserById(
+      unbanUserDto.id,
+      {
+        ban_duration: 'none',
+      },
+    );
+
+    if (unbanError) {
+      throw new BadRequestException(
+        `Không thể mở khóa tài khoản: ${unbanError.message}`,
+      );
+    }
+
+    const { data, error: profileError } = await supabase
+      .from('profiles')
+      .update({ is_active: true })
+      .eq('id', unbanUserDto.id)
+      .select();
+
+    if (profileError) {
+      throw new BadRequestException(
+        `Không thể cập nhật profile: ${profileError.message}`,
+      );
+    }
+
+    return {
+      success: true,
+      code: 200,
+      message: 'Đã mở khóa tài khoản và khôi phục người dùng thành công',
+      data: data,
+    };
+  }
+}
