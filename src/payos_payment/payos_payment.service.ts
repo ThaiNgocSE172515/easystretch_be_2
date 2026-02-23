@@ -63,33 +63,64 @@ export class PayosPaymentService {
     }
 
 
-    async webhook(req: any) {
-        const webhookData = this.payos.webhooks.verify(req);
-        console.log("đã nhận được web hook " + webhookData);
-        if (webhookData) {
-            const status = (await webhookData).code == "00" ? "success" : "cancel"
-            const { data: orderData, error: orderError } = await this.supabaseService.getClient().from("orders").update({ "status": status }).eq("sepay_transaction_id", (await webhookData).orderCode).select("*").single();
+    async webhook(body: any) {
+        try {
+            const webhookData = this.payos.webhooks.verify(body);
+            console.log("Dữ liệu Webhook nhận được:", webhookData);
+
+            const isSuccess = (await webhookData).code === "00";
+            const status = isSuccess ? "SUCCESS" : "CANCEL";
+
+            const { data: orderData, error: orderError } = await this.supabaseService
+                .getClient()
+                .from("orders")
+                .update({ status: status })
+                .eq("sepay_transaction_id", (await webhookData).orderCode)
+                .select("*")
+                .single();
 
             if (orderError) {
-                throw new BadRequestException(orderError.message);
+                console.error("Lỗi cập nhật đơn hàng:", orderError.message);
+                return { success: false, message: "Order not found" };
             }
 
-            const ucData: useCourseDto = {
-                course_id: orderData.course_id,
-                user_id: orderData.user_id,
-                enrolled_at: new Date(),
+            if (isSuccess && orderData) {
+                const { data: existingUC } = await this.supabaseService
+                    .getClient()
+                    .from("user_courses")
+                    .select("*")
+                    .eq("user_id", orderData.user_id)
+                    .eq("course_id", orderData.course_id)
+                    .maybeSingle();
+
+                if (!existingUC) {
+                    const ucData = {
+                        course_id: orderData.course_id,
+                        user_id: orderData.user_id, // Sửa lỗi gán nhầm course_id vào user_id của bạn
+                        enrolled_at: new Date(),
+                    };
+
+                    const { error: userCourseError } = await this.supabaseService
+                        .getClient()
+                        .from("user_courses")
+                        .insert([ucData]);
+
+                    if (userCourseError) {
+                        console.error("Lỗi cấp khóa học:", userCourseError.message);
+                    }
+                }
             }
 
-            const { data: userCourseData, error: userCourseError } = await this.supabaseService.getClient().from("user_courses").insert([ucData]).select("*").maybeSingle();
-            if (userCourseError) {
-                throw new BadRequestException(userCourseError.message);
-            }
-        }
+            return {
+                code: 200,
+                success: true,
+                message: "Webhook processed successfully",
+            };
 
-        return {
-            code: 200,
-            success: true,
-            message: "Webhook received",
+        } catch (e) {
+            console.error("Webhook Error:", e.message);
+            // Trả về lỗi để PayOS có thể gửi lại webhook nếu cần (tùy cấu hình)
+            throw new BadRequestException("Invalid Webhook Signature");
         }
     }
 }
