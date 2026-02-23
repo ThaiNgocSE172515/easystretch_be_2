@@ -18,7 +18,7 @@ import { RolesGuard } from '../guard/roles.guard';
 
 @Controller('admin-exercises/exercises')
 export class ExercisesController {
-  constructor(private readonly exercisesService: ExercisesService) {}
+  constructor(private readonly exercisesService: ExercisesService) { }
 
   @Post()
   @UseGuards(AuthGuard, RolesGuard)
@@ -53,6 +53,21 @@ export class ExercisesController {
   @ApiBearerAuth()
   @ApiOperation({ summary: '[ADMIN] Tìm execercise bằng id phía Admin' })
   findOne(@Param('id') id: string, @Req() req) {
+    return this.exercisesService.findOne(id);
+  }
+
+  @Get("user")
+  @UseGuards(AuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: '[User] Tìm tất execercise phía Admin' })
+  findAllUser(@Req() req) {
+    return this.exercisesService.findAll();
+  }
+
+  @Get('user/:id')
+  @UseGuards(AuthGuard)
+  @ApiOperation({ summary: '[User] Tìm execercise bằng id phía Admin' })
+  findOneUser(@Param('id') id: string, @Req() req) {
     return this.exercisesService.findOne(id);
   }
 }

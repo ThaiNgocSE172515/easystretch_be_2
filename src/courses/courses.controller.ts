@@ -12,7 +12,7 @@ export class CoursesController {
 
   @Post()
   @ApiOperation({
-    summary: '[admin] Tạo courses phía admin',
+    summary: '[admin] Tạo courses phía admin (phase_number có nhiều week_number, week_number có 7 day_number)',
   })
   @UseGuards(AuthGuard, RolesGuard)
   @ApiBearerAuth()
