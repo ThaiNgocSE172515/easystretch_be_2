@@ -23,7 +23,7 @@ export class ExercisesController {
   @Post()
   @UseGuards(AuthGuard, RolesGuard)
   @ApiBearerAuth()
-  @ApiOperation({ summary: 'Taọ execercise phía Admin' })
+  @ApiOperation({ summary: '[ADMIN] Taọ execercise phía Admin' })
   create(@Body() createExerciseDto: CreateExerciseDto, @Req() req) {
     return this.exercisesService.create(createExerciseDto);
   }
@@ -31,7 +31,7 @@ export class ExercisesController {
   @Put(':id')
   @UseGuards(AuthGuard, RolesGuard)
   @ApiBearerAuth()
-  @ApiOperation({ summary: 'Cập nhật execercise phía Admin' })
+  @ApiOperation({ summary: '[ADMIN] Cập nhật execercise phía Admin' })
   update(
     @Param('id') id: string,
     @Body() updateExerciseDto: UpdateExerciseDto,
@@ -43,7 +43,7 @@ export class ExercisesController {
   @Get()
   @UseGuards(AuthGuard, RolesGuard)
   @ApiBearerAuth()
-  @ApiOperation({ summary: 'Tìm tất execercise phía Admin' })
+  @ApiOperation({ summary: '[ADMIN] Tìm tất execercise phía Admin' })
   findAll(@Req() req) {
     return this.exercisesService.findAll();
   }
@@ -51,7 +51,7 @@ export class ExercisesController {
   @Get(':id')
   @UseGuards(AuthGuard, RolesGuard)
   @ApiBearerAuth()
-  @ApiOperation({ summary: 'Tìm execercise bằng id phía Admin' })
+  @ApiOperation({ summary: '[ADMIN] Tìm execercise bằng id phía Admin' })
   findOne(@Param('id') id: string, @Req() req) {
     return this.exercisesService.findOne(id);
   }

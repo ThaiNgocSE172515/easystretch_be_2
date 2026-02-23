@@ -1,31 +1,41 @@
-import { Controller, Get, Post, Body, Param } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, UseGuards } from '@nestjs/common';
 import { WaterService } from './water.service';
 import { UpdateWaterSettingDto, CreateWaterLogDto } from './dto/create-water.dto';
+import { ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
+import { AuthGuard } from '../guard/auth.guard';
+import { RolesGuard } from '../guard/roles.guard';
 
 @Controller('water')
 export class WaterController {
   constructor(private readonly waterService: WaterService) {}
 
   @Post('settings')
-  /* #swagger.tags = ['Water Tracker (Uống Nước)']
-     #swagger.summary = 'Cập nhật mục tiêu nước & Sinh ra lịch trình nhắc nhở'
-  */
+  @ApiOperation({
+    summary:
+      '[User] Cập nhật mục tiêu nước & Sinh ra lịch trình nhắc nhở phía user',
+  })
+  @UseGuards(AuthGuard)
+  @ApiBearerAuth()
   updateSettings(@Body() dto: UpdateWaterSettingDto) {
     return this.waterService.updateSettings(dto);
   }
 
   @Post('log')
-  /* #swagger.tags = ['Water Tracker (Uống Nước)']
-     #swagger.summary = 'Ghi nhận 1 lần uống nước (VD: Vừa uống 250ml)'
-  */
+  @ApiOperation({
+    summary: '[User] Ghi nhận 1 lần uống nước (VD: Vừa uống 250ml) phía user',
+  })
+  @UseGuards(AuthGuard)
+  @ApiBearerAuth()
   logWater(@Body() dto: CreateWaterLogDto) {
     return this.waterService.logWater(dto);
   }
 
   @Get('progress/:userId')
-  /* #swagger.tags = ['Water Tracker (Uống Nước)']
-     #swagger.summary = 'Lấy tiến độ uống nước trong ngày hôm nay của User'
-  */
+  @ApiOperation({
+    summary: '[User] Lấy tiến độ uống nước trong ngày hôm nay của User',
+  })
+  @UseGuards(AuthGuard)
+  @ApiBearerAuth()
   getDailyProgress(@Param('userId') userId: string) {
     return this.waterService.getDailyProgress(userId);
   }
