@@ -46,11 +46,6 @@ export class LoginUserDto {
 }
 
 export class BanUserDto {
-  @IsNotEmpty()
-  @IsString()
-  @ApiProperty({ example: '710ca13c-6014-4bba-afc9-79dbfa9a1e31' })
-  id: string;
-
   @IsNumber()
   @IsNotEmpty()
   @ApiProperty({ example: 1 })
@@ -68,10 +63,3 @@ export class BanUserDto {
   reason?: string;
 }
 
-export class UnbanUserDto {
-  @IsNotEmpty()
-  @IsString()
-  @ApiProperty({ example: '710ca13c-6014-4bba-afc9-79dbfa9a1e31' })
-  id: string;
-
-}

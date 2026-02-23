@@ -1,9 +1,17 @@
-import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
 import { UsersService } from './users.service';
 import { ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 import { AuthGuard } from '../guard/auth.guard';
 import { RolesGuard } from '../guard/roles.guard';
-import { BanUserDto, UnbanUserDto } from './dto/create-user.dto';
+import { BanUserDto } from './dto/create-user.dto';
 
 @Controller('admin-users')
 export class AdminUsersController {
@@ -20,20 +28,20 @@ export class AdminUsersController {
     return this.usersService.findAll();
   }
 
-  @Post("ban")
+  @Post("ban/:id")
   @ApiOperation({summary: "Ban người dùng vi phạm"})
   @UseGuards(AuthGuard, RolesGuard)
   @ApiBearerAuth()
-  banUser(@Body() banUserDto: BanUserDto ) {
-    return this.usersService.ban(banUserDto);
+  banUser(@Param("id") id: string,@Body() banUserDto: BanUserDto ) {
+    return this.usersService.ban(id, banUserDto);
   }
 
-  @Post("unban")
+  @Post("unban/:id")
   @ApiOperation({summary: "Bỏ ban người dùng vi phạm"})
   @UseGuards(AuthGuard, RolesGuard)
   @ApiBearerAuth()
-  unbanUser(@Body() unbanUserDto: UnbanUserDto ) {
-    return this.usersService.unban(unbanUserDto);
+  unbanUser(@Param("id") id: string ) {
+    return this.usersService.unban(id);
   }
 
 

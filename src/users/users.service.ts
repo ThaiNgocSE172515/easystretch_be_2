@@ -7,7 +7,6 @@ import {
   BanUserDto,
   CreateUserDto,
   LoginUserDto,
-  UnbanUserDto,
 } from './dto/create-user.dto';
 import { SupabaseService } from '../supabase/supabase.service';
 import bcrypt from 'bcrypt';
@@ -89,11 +88,9 @@ export class UsersService {
     return ApiResponse.success(data, 'Lấy Danh sách user thành công', 200);
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
-  }
 
-  async ban(banUserDTO: BanUserDto) {
+
+  async ban(id: string, banUserDTO: BanUserDto) {
     const supabase = this.supabaseService.getClient();
     let duration = 0;
 
@@ -116,7 +113,7 @@ export class UsersService {
     }
 
     const { data: banData, error: banError } =
-      await supabase.auth.admin.updateUserById(banUserDTO.id, {
+      await supabase.auth.admin.updateUserById(id, {
         ban_duration: duration + 'h',
       });
 
@@ -129,7 +126,7 @@ export class UsersService {
     const { data, error: profileError } = await supabase
       .from('profiles')
       .update({ is_active: false })
-      .eq('id', banUserDTO.id)
+      .eq('id', id)
       .select();
 
     if (profileError) {
@@ -150,11 +147,11 @@ export class UsersService {
     return ApiResponse.success(formData, 'Khóa tài khoản thành công', 200);
   }
 
-  async unban(unbanUserDto: UnbanUserDto) {
+  async unban(id: string) {
     const supabase = this.supabaseService.getClient();
 
     const { error: unbanError } = await supabase.auth.admin.updateUserById(
-      unbanUserDto.id,
+      id,
       {
         ban_duration: 'none',
       },
@@ -169,7 +166,7 @@ export class UsersService {
     const { data, error: profileError } = await supabase
       .from('profiles')
       .update({ is_active: true })
-      .eq('id', unbanUserDto.id)
+      .eq('id', id)
       .select();
 
     if (profileError) {
