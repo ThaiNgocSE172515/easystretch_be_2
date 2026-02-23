@@ -2,5 +2,7 @@
     "appService.zipIgnorePattern": [
         "node_modules{,/**}",
         ".vscode{,/**}"
-    ]
+    ],
+    "appService.defaultWebAppToDeploy": "/subscriptions/7abdbf49-2a42-4825-9dae-3f47f62723d4/resourceGroups/EasyStretch/providers/Microsoft.Web/sites/EasyStretch2",
+    "appService.deploySubpath": "."
 }
