@@ -6,7 +6,7 @@ import { CreateUserDto } from '../users/dto/create-user.dto';
 
 @Injectable()
 export class MealsService {
-  constructor(private readonly supabaseService: SupabaseService) {}
+  constructor(private readonly supabaseService: SupabaseService) { }
 
   async create(createUserMealDto: CreateMealDto) {
     const { data, error } = await this.supabaseService
@@ -29,6 +29,34 @@ export class MealsService {
         'Lỗi thêm bữa ăn: ' + error.message,
       );
     return { message: 'Thêm vào nhật ký thành công', data };
+  }
+
+  async update(id: string, updateMealDto: UpdateMealDto) {
+    const { data, error } = await this.supabaseService
+      .getClient()
+      .from('user_meals').update(updateMealDto).eq("id", id)
+      .select()
+      .maybeSingle();
+
+    if (error)
+      throw new InternalServerErrorException(
+        'Lỗi cập nhật bữa ăn: ' + error.message,
+      );
+    return { code: 200, success: true, message: 'Cập nhật bữa ăn thành công', data };
+  }
+
+  async createMany(createUserMealDto: CreateMealDto[]) {
+    const { data, error } = await this.supabaseService
+      .getClient()
+      .from('user_meals')
+      .insert(createUserMealDto)
+      .select()
+
+    if (error)
+      throw new InternalServerErrorException(
+        'Lỗi thêm bữa ăn: ' + error.message,
+      );
+    return { code: 200, success: true, message: 'Thêm vào nhật ký thành công', data };
   }
 
   async getMealsByDate(userId: string, date: string) {

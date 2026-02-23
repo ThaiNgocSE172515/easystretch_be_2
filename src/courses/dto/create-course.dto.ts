@@ -6,6 +6,8 @@ import {
   ValidateNested,
   Max,
   Min,
+  IsNumber,
+  IsUrl,
 } from 'class-validator';
 import { Type } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
@@ -63,6 +65,14 @@ export class CreateCourseDto {
   @IsOptional()
   @ApiProperty({ example: 'beginner' })
   level?: string; //beginner, intermediate, advanced
+
+  @IsNumber()
+  @ApiProperty({ example: 50000 })
+  price: number;
+  
+  @IsUrl()
+  @ApiProperty({ example: "http://hinhanh.com" })
+  img_url: string;
 
   @IsArray()
   @ValidateNested({ each: true })
