@@ -37,14 +37,14 @@ export class UsersController {
   }
 
   @Get('profile')
-  @ApiOperation({summary: "Lấy thông tin cá nhân"})
+  @ApiOperation({summary: "Lấy thông tin cá nhân "})
   @UseGuards(AuthGuard)
   @ApiBearerAuth()
   getProfile(@Req() req) {
     return this.usersService.getProfile(req.user);
   }
 
-  @Patch('update/:id')
+  @Patch('update') 
   @ApiOperation({summary: "Cập nhật thông tin cá nhân"})
   @UseGuards(AuthGuard)
   @ApiBearerAuth()
