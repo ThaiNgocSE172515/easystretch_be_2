@@ -29,10 +29,16 @@ export class CreatePaymentLinkDto {
     amount: number;
 
     @IsString({ message: "description là 1 chuỗi ký tự" })
+    @ApiProperty({example: "Khóa học giản cơ tại nhà"})
     description: string;
 
     @ValidateNested({ each: true })
     @Type(() => PaymentItemsDto)
+    @ApiProperty({example: [{
+        name: "4fffd2f9-cc0e-4e27-a06c-9f7fd41b225a",
+        quantity: 1,
+        price: 50000
+    }], description: "name là course id"})
     items: PaymentItemsDto[];
 
     @IsUrl({}, { message: "returnUrl phải là url" })
