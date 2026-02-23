@@ -5,7 +5,7 @@ import { SupabaseService } from '../supabase/supabase.service';
 
 @Injectable()
 export class ExercisesService {
-  constructor(private readonly supabaseService: SupabaseService) {}
+  constructor(private readonly supabaseService: SupabaseService) { }
 
   async create(createExerciseDto: CreateExerciseDto) {
     const supabase = this.supabaseService.getClient();
@@ -15,7 +15,12 @@ export class ExercisesService {
       .select();
 
     if (error) throw new InternalServerErrorException(error.message);
-    return data[0];
+    return {
+      code: 200,
+      success: true,
+      message: "Tạo dữ liệu thành công",
+      data: data[0]
+    };
   }
 
   async update(id, updateExerciseDto: UpdateExerciseDto) {
@@ -26,7 +31,12 @@ export class ExercisesService {
       .select();
 
     if (error) throw new InternalServerErrorException(error.message);
-    return data[0];
+    return {
+      code: 200,
+      success: true,
+      message: "Cập nhật dữ liệu thành công",
+      data: data[0]
+    };
   }
 
   async findAll() {
@@ -35,7 +45,12 @@ export class ExercisesService {
     const { data, error } = await supabase.from('exercises').select('*');
 
     if (error) throw new InternalServerErrorException(error.message);
-    return data;
+    return {
+      code: 200,
+      success: true,
+      message: "Lấy dữ liệu thành công",
+      data
+    };;
   }
 
   async findOne(id: string) {
@@ -48,7 +63,12 @@ export class ExercisesService {
       .single();
 
     if (error) throw new InternalServerErrorException(error.message);
-    return data;
+    return {
+      code: 200,
+      success: true,
+      message: "Lấy dữ liệu thành công",
+      data
+    };
   }
 
   async delete(id: string) {
@@ -61,6 +81,11 @@ export class ExercisesService {
       .single();
 
     if (error) throw new InternalServerErrorException(error.message);
-    return data;
+    return {
+      code: 200,
+      success: true,
+      message: "Xóa exercise thành công",
+      data
+    };;
   }
 }

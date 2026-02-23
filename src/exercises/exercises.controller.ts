@@ -16,7 +16,7 @@ import { ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 import { AuthGuard } from '../guard/auth.guard';
 import { RolesGuard } from '../guard/roles.guard';
 
-@Controller('admin-exercises/exercises')
+@Controller('exercises')
 export class ExercisesController {
   constructor(private readonly exercisesService: ExercisesService) { }
 
@@ -27,6 +27,34 @@ export class ExercisesController {
   create(@Body() createExerciseDto: CreateExerciseDto, @Req() req) {
     return this.exercisesService.create(createExerciseDto);
   }
+
+  @Get("client")
+  @UseGuards(AuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: '[User] Tìm tất execercise phía User' })
+  findAllUser(@Req() req) {
+    return this.exercisesService.findAll();
+  }
+
+
+  @Get('client/:id')
+  @UseGuards(AuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: '[User] Tìm execercise bằng id phía User' })
+  findOneUser(@Param('id') id: string, @Req() req) {
+    return this.exercisesService.findOne(id);
+  }
+
+  @Get()
+  @UseGuards(AuthGuard, RolesGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: '[ADMIN] Tìm tất execercise phía Admin' })
+  findAll(@Req() req) {
+    return this.exercisesService.findAll();
+  }
+
+
+
 
   @Put(':id')
   @UseGuards(AuthGuard, RolesGuard)
@@ -40,14 +68,6 @@ export class ExercisesController {
     return this.exercisesService.update(id, updateExerciseDto);
   }
 
-  @Get()
-  @UseGuards(AuthGuard, RolesGuard)
-  @ApiBearerAuth()
-  @ApiOperation({ summary: '[ADMIN] Tìm tất execercise phía Admin' })
-  findAll(@Req() req) {
-    return this.exercisesService.findAll();
-  }
-
   @Get(':id')
   @UseGuards(AuthGuard, RolesGuard)
   @ApiBearerAuth()
@@ -56,18 +76,7 @@ export class ExercisesController {
     return this.exercisesService.findOne(id);
   }
 
-  @Get("user")
-  @UseGuards(AuthGuard)
-  @ApiBearerAuth()
-  @ApiOperation({ summary: '[User] Tìm tất execercise phía Admin' })
-  findAllUser(@Req() req) {
-    return this.exercisesService.findAll();
-  }
 
-  @Get('user/:id')
-  @UseGuards(AuthGuard)
-  @ApiOperation({ summary: '[User] Tìm execercise bằng id phía Admin' })
-  findOneUser(@Param('id') id: string, @Req() req) {
-    return this.exercisesService.findOne(id);
-  }
+
+
 }
