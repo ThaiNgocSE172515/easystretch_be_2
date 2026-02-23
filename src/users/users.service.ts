@@ -11,6 +11,7 @@ import {
 import { SupabaseService } from '../supabase/supabase.service';
 import bcrypt from 'bcrypt';
 import { ApiResponse } from '../common/response/api-response';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
 export class UsersService {
@@ -39,6 +40,33 @@ export class UsersService {
       success: true,
       code: 201,
       message: 'Thêm user thành công',
+      data: data,
+    };
+  }
+async update(id: string, updateUserDto: UpdateUserDto) {
+    const { height_cm, weight_kg, gender, goal } = updateUserDto;
+
+    const supabase = this.supabaseService.getClient();
+
+    const dataUpdate = {
+      height_cm,
+      weight_kg,
+      gender,
+      goal
+    }
+
+    const { data, error } = await supabase
+      .from('profiles')
+      .update(dataUpdate).eq("id", id).select();
+
+    if (error) {
+      throw new BadRequestException(error.message);
+    }
+
+    return {
+      success: true,
+      code: 201,
+      message: 'cập nhật user thành công',
       data: data,
     };
   }

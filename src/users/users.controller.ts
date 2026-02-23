@@ -12,6 +12,7 @@ import { UsersService } from './users.service';
 import { CreateUserDto, LoginUserDto } from './dto/create-user.dto';
 import { ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { AuthGuard } from '../guard/auth.guard';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @Controller('users')
 export class UsersController {
@@ -41,5 +42,14 @@ export class UsersController {
   @ApiBearerAuth()
   getProfile(@Req() req) {
     return this.usersService.getProfile(req.user);
+  }
+
+  @Patch('update/:id')
+  @ApiOperation({summary: "Cập nhật thông tin cá nhân"})
+  @UseGuards(AuthGuard)
+  @ApiBearerAuth()
+  updateProfile(@Body() updateUserDto: UpdateUserDto, @Req() req) {
+    const id = req.user.id;
+    return this.usersService.update(id, updateUserDto);
   }
 }
