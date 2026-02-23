@@ -99,7 +99,7 @@ export class CoursesService {
       `,
       )
       .eq('id', id)
-      .single();
+      .maybeSingle();
 
     if (error) throw new InternalServerErrorException(error.message);
     return data;

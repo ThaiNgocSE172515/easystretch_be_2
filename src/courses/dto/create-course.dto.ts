@@ -83,6 +83,20 @@ export class CreateCourseDto {
           },
         ],
       },
+      {
+        phase_number: 1,
+        week_number: 1,
+        day_number: 2,
+        title: 'ngày 2, tuần 1, giai đoạn 1',
+        exercises: [
+          {
+            exercise_id: '39dcf413-802d-463e-8925-073d13277a44',
+          },
+          {
+            exercise_id: 'cd99bf48-f486-4d63-94d2-527aef2d92eb',
+          },
+        ],
+      },
     ],
   })
   days: CourseDayDto[];
