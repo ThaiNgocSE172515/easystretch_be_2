@@ -15,7 +15,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
 export class UsersService {
-  constructor(private readonly supabaseService: SupabaseService) {}
+  constructor(private readonly supabaseService: SupabaseService) { }
 
   async signup(createUserDto: CreateUserDto) {
     const { full_name, email, password, role } = createUserDto;
@@ -43,7 +43,7 @@ export class UsersService {
       data: data,
     };
   }
-async update(id: string, updateUserDto: UpdateUserDto) {
+  async update(id: string, updateUserDto: UpdateUserDto) {
     const { height_cm, weight_kg, gender, goal } = updateUserDto;
 
     const supabase = this.supabaseService.getClient();
@@ -91,6 +91,16 @@ async update(id: string, updateUserDto: UpdateUserDto) {
     };
   }
 
+  async findAll() {
+    const supabase = this.supabaseService.getClient();
+    const { data, error } = await supabase.from('profiles').select('*');
+    if (error) {
+      throw new BadRequestException('Lấy danh sách user khônng thành công');
+    }
+    return ApiResponse.success(data, 'Lấy Danh sách user thành công', 200);
+  }
+
+
   async getProfile(user: any) {
     const supabase = this.supabaseService.getClient();
     const { data, error } = await supabase
@@ -107,14 +117,6 @@ async update(id: string, updateUserDto: UpdateUserDto) {
     };
   }
 
-  async findAll() {
-    const supabase = this.supabaseService.getClient();
-    const { data, error } = await supabase.from('profiles').select('*');
-    if (error) {
-      throw new BadRequestException('Lấy danh sách user khônng thành công');
-    }
-    return ApiResponse.success(data, 'Lấy Danh sách user thành công', 200);
-  }
 
 
 
