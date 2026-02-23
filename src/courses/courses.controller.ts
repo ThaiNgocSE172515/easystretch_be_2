@@ -41,13 +41,23 @@ export class CoursesController {
     return this.coursesService.findAll();
   }
 
+  @Get('bought')
+  @UseGuards(AuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({
+    summary: '[User] hiển thị danh sách course đã mua',
+  })
+  getBoughtCourse(@Req() req: any) {
+    return this.coursesService.getBoughtCourse(req.user.id);
+  }
+
   @ApiOperation({
     summary: '[admin: quản lý] hiển thị course theo id phía admin',
   })
   @UseGuards(AuthGuard, RolesGuard)
   @ApiBearerAuth()
   @Get(':id')
-  findOne(@Param('id') id: string, @Req() req) {
+  findOne(@Param('id') id: string) {
     return this.coursesService.findOne(id);
   }
 
@@ -57,7 +67,9 @@ export class CoursesController {
   @UseGuards(AuthGuard, CourseGuard)
   @ApiBearerAuth()
   @Get('payment/:course_id')
-  findOneByPayment(@Param('course_id') id: string, @Req() req) {
+  findOneByPayment(@Param('course_id') id: string) {
     return this.coursesService.findOne(id);
   }
+
+
 }

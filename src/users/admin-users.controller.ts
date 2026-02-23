@@ -24,7 +24,7 @@ export class AdminUsersController {
   })
   @UseGuards(AuthGuard, RolesGuard)
   @ApiBearerAuth()
-  findAll(@Req() req) {
+  findAll() {
     return this.usersService.findAll();
   }
 

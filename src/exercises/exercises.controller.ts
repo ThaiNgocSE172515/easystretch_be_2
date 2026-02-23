@@ -32,7 +32,7 @@ export class ExercisesController {
   @UseGuards(AuthGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: '[User] Tìm tất execercise phía User' })
-  findAllUser(@Req() req) {
+  findAllUser() {
     return this.exercisesService.findAll();
   }
 
@@ -41,7 +41,7 @@ export class ExercisesController {
   @UseGuards(AuthGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: '[User] Tìm execercise bằng id phía User' })
-  findOneUser(@Param('id') id: string, @Req() req) {
+  findOneUser(@Param('id') id: string) {
     return this.exercisesService.findOne(id);
   }
 
@@ -49,7 +49,7 @@ export class ExercisesController {
   @UseGuards(AuthGuard, RolesGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: '[ADMIN] Tìm tất execercise phía Admin' })
-  findAll(@Req() req) {
+  findAll() {
     return this.exercisesService.findAll();
   }
 
@@ -63,7 +63,6 @@ export class ExercisesController {
   update(
     @Param('id') id: string,
     @Body() updateExerciseDto: UpdateExerciseDto,
-    @Req() req,
   ) {
     return this.exercisesService.update(id, updateExerciseDto);
   }
@@ -72,7 +71,7 @@ export class ExercisesController {
   @UseGuards(AuthGuard, RolesGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: '[ADMIN] Tìm execercise bằng id phía Admin' })
-  findOne(@Param('id') id: string, @Req() req) {
+  findOne(@Param('id') id: string) {
     return this.exercisesService.findOne(id);
   }
 

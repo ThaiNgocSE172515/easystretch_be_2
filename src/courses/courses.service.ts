@@ -104,4 +104,8 @@ export class CoursesService {
     if (error) throw new InternalServerErrorException(error.message);
     return data;
   }
+
+  getBoughtCourse(userId: string) {
+    return this.supabaseService.getClient().from('user_courses').select('*, courses ( * )').eq('user_id', userId);
+  }
 }
