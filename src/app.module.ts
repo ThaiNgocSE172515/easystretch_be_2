@@ -10,11 +10,10 @@ import { CoursesModule } from './courses/courses.module';
 import { FoodsModule } from './foods/foods.module';
 import { MealsModule } from './meals/meals.module';
 import { WaterModule } from './water/water.module';
-import { UserCoursesModule } from './user_courses/user_courses.module';
 import { PayosPaymentModule } from './payos_payment/payos_payment.module';
 
 @Module({
-  imports: [ConfigModule.forRoot({ isGlobal: true }),SupabaseModule, UsersModule, GuardModule, ExercisesModule, CoursesModule, FoodsModule, MealsModule, WaterModule, UserCoursesModule, PayosPaymentModule],
+  imports: [ConfigModule.forRoot({ isGlobal: true }),SupabaseModule, UsersModule, GuardModule, ExercisesModule, CoursesModule, FoodsModule, MealsModule, WaterModule, PayosPaymentModule],
   controllers: [AppController],
   providers: [AppService],
 })
