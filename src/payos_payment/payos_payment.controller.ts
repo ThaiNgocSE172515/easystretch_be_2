@@ -5,11 +5,13 @@ import { AuthGuard } from 'src/guard/auth.guard';
 import { ApiBearerAuth } from '@nestjs/swagger';
 
 @Controller('payos-payment')
-@UseGuards(AuthGuard)
-@ApiBearerAuth()
+
 export class PayosPaymentController {
     constructor(private readonly payosService: PayosPaymentService) { }
+
     @Post("create")
+    @UseGuards(AuthGuard)
+    @ApiBearerAuth()
     async create(@Body() body: CreatePaymentLinkDto, @Req() req) {
         const orderCode = Number(Date.now().toString().slice(-9));
         const data = {
