@@ -18,6 +18,7 @@ export class PaymentItemsDto {
 }
 
 export class CreatePaymentLinkDto {
+    
     @IsNumber({}, { message: "orderCode phải là 1 số" })
     @Optional()
     @ApiHideProperty()
