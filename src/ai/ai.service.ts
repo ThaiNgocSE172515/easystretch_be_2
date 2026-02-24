@@ -3,13 +3,13 @@ import { CreateAiDto } from './dto/create-ai.dto';
 import { UpdateAiDto } from './dto/update-ai.dto';
 import { SupabaseService } from '../supabase/supabase.service';
 import Grog from  "groq-sdk"
-import {Client} from "pg"
+import {Pool} from "pg"
 import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class AiService {
   private grog: Grog;
-  private client: Client;
+  private pool: Pool;
   constructor(
     private readonly supabaseService: SupabaseService,
     private readonly configService: ConfigService,
@@ -17,10 +17,10 @@ export class AiService {
     this.grog = new Grog({
       apiKey: configService.get<string>('GROQ_API_KEY'),
     });
-    this.client = new Client({
+    this.pool = new Pool({
       connectionString: configService.get<string>('DATABASE_URL'),
-    })
-    this.client.connect()
+    });
+    this.pool.connect();
   }
 
   sql = `TABLE public.course_day_exercises (
@@ -162,7 +162,7 @@ export class AiService {
 
       Nhiệm vụ: Viết câu lệnh SQL (chỉ SELECT) để trả lời câu hỏi trên.
       TUYỆT ĐỐI CHỈ TRẢ VỀ CÂU LỆNH SQL THUẦN TÚY, không giải thích, không dùng markdown (\`\`\`).
-    `
+    `;
 
     const rs = await this.grog.chat.completions.create({
       model: 'meta-llama/llama-4-scout-17b-16e-instruct',
@@ -174,12 +174,12 @@ export class AiService {
     });
 
     // @ts-ignore
-    const sqlQuery = rs.choices[0].message.content.trim() || 'Không thể tạo báo cáo lúc này';
+    const sqlQuery = rs.choices[0].message.content.trim();
     console.log('AI generated SQL:', sqlQuery);
     try {
-      const db = await this.client.query(sqlQuery);
+      const db = await this.pool.query(sqlQuery, {ssl: { rejectUnauthorized: false }});
 
-      const prompt = `bạn là 1 quản lý hệ thống, bạn sẽ trả lời gắn gọn dựa trên ${question.question} và ${JSON.stringify(db.rows)} trả lời gắn gọn súc tích tuyệt đối không dùng markdown`
+      const prompt = `bạn là 1 quản lý hệ thống, bạn sẽ trả lời gắn gọn dựa trên ${question.question} và ${JSON.stringify(db.rows)} trả lời gắn gọn súc tích tuyệt đối không dùng markdown`;
       const rs = await this.grog.chat.completions.create({
         model: 'meta-llama/llama-4-scout-17b-16e-instruct',
         messages: [{ role: 'user', content: prompt }],
@@ -187,7 +187,7 @@ export class AiService {
         max_completion_tokens: 1024,
         top_p: 1,
         stream: false,
-      })
+      });
       console.log('DB response:', db.rows);
       return {
         query_used: sqlQuery,
@@ -197,7 +197,7 @@ export class AiService {
       return {
         query_used: sqlQuery,
         answer: error.message,
-      }
+      };
     }
   }
 }
