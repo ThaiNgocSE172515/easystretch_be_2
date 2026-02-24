@@ -216,4 +216,17 @@ export class UsersService {
       data: data,
     };
   }
+
+  async signout() {
+    const supabase = this.supabaseService.getClient();
+    const {error} = await supabase.auth.signOut();
+    if(error) {
+      throw new BadRequestException(error.message);
+    }
+    return {
+      code: 200,
+      success: true,
+      message: "Đã đăng xuất thành công"
+    }
+  }
 }

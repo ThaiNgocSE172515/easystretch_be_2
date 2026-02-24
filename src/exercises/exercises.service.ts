@@ -76,7 +76,7 @@ export class ExercisesService {
 
     const { data, error } = await supabase
       .from('exercises')
-      .select('*')
+      .delete()
       .eq('id', id)
       .single();
 
@@ -85,7 +85,6 @@ export class ExercisesService {
       code: 200,
       success: true,
       message: "Xóa exercise thành công",
-      data
-    };;
+    };
   }
 }

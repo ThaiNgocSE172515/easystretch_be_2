@@ -35,6 +35,11 @@ export class UsersController {
   signin(@Body() loginUserDto: LoginUserDto) {
     return this.usersService.signin(loginUserDto);
   }
+  @Post('signout')
+  @ApiOperation({ summary: 'Đăng xuất' })
+  signout() {
+    return this.usersService.signout();
+  }
 
   @Get('profile')
   @ApiOperation({summary: "Lấy thông tin cá nhân "})

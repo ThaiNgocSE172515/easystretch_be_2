@@ -28,6 +28,14 @@ export class ExercisesController {
   ) {
     return this.exercisesService.create(createExerciseDto);
   }
+  @Delete(':id')
+  @UseGuards(AuthGuard, RolesGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: '[ADMIN] Delete execercise bằng exercise id phía Admin' })
+  delete(@Param('id') id: string
+  ) {
+    return this.exercisesService.delete(id);
+  }
 
   @Get("client")
   @UseGuards(AuthGuard)
