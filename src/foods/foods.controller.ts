@@ -1,6 +1,14 @@
-import { Controller, Get, Post, Body, Param, Patch } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Param,
+  Patch,
+  Delete,
+} from '@nestjs/common';
 import { FoodsService } from './foods.service';
-import { CreateFoodDto } from './dto/create-food.dto';
+import { CreateFoodDto, IdDto } from './dto/create-food.dto';
 import { ApiBody, ApiOperation } from '@nestjs/swagger';
 import { UpdateFoodDto } from './dto/update-food.dto';
 
@@ -20,6 +28,12 @@ export class FoodsController {
     return this.foodsService.update(id ,updateFoodDto);
   }
 
+  @Delete(":id")
+  @ApiOperation({ summary: "[User] Xóa foods phía user" })
+  delete(@Param("id") idDto: IdDto) {
+    return this.foodsService.delete(idDto);
+  }
+  
   @Post("/many")
   @ApiOperation({ summary: "[User] tạo mới nhiều food phía user" })
   @ApiBody(

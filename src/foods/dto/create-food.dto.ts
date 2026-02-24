@@ -1,4 +1,11 @@
-import { IsString, IsInt, IsNumber, IsOptional, IsUrl } from 'class-validator';
+import {
+  IsString,
+  IsInt,
+  IsNumber,
+  IsOptional,
+  IsUrl,
+  IsUUID,
+} from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export class CreateFoodDto {
@@ -55,4 +62,12 @@ export class CreateFoodDto {
     description: 'Đường dẫn URL hình ảnh của món ăn',
   })
   image_url?: string;
+}
+
+export class IdDto {
+  @IsUUID()
+  @ApiProperty({
+    example: '123e4567-e89b-12d3-a456-426614174000',
+  })
+  id: string;
 }

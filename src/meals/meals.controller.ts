@@ -9,7 +9,7 @@ import {
   Query,
 } from '@nestjs/common';
 import { MealsService } from './meals.service';
-import { CreateMealDto } from './dto/create-meal.dto';
+import { CreateMealDto, IdDto } from './dto/create-meal.dto';
 import { UpdateMealDto } from './dto/update-meal.dto';
 import { ApiBody, ApiOperation } from '@nestjs/swagger';
 
@@ -27,6 +27,11 @@ export class MealsController {
   @ApiOperation({ summary: "[User] cập nhật mới meal phía user" })
   update(@Param("id") id: string, @Body() updateMealDto: UpdateMealDto) {
     return this.userMealsService.update(id, updateMealDto);
+  }
+  @Delete(":id")
+  @ApiOperation({ summary: "[User] Xóa meal phía user" })
+  delete(@Param("id") idDto: IdDto) {
+    return this.userMealsService.delete(idDto);
   }
 
   @Post("/many")

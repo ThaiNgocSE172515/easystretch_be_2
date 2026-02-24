@@ -1,8 +1,7 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
-import { CreateMealDto } from './dto/create-meal.dto';
+import { CreateMealDto, IdDto } from './dto/create-meal.dto';
 import { UpdateMealDto } from './dto/update-meal.dto';
 import { SupabaseService } from '../supabase/supabase.service';
-import { CreateUserDto } from '../users/dto/create-user.dto';
 
 @Injectable()
 export class MealsService {
@@ -43,6 +42,18 @@ export class MealsService {
         'Lỗi cập nhật bữa ăn: ' + error.message,
       );
     return { code: 200, success: true, message: 'Cập nhật bữa ăn thành công', data };
+  }
+
+  async delete(idDto: IdDto) {
+    const { data, error } = await this.supabaseService
+      .getClient()
+      .from('user_meals').delete().eq("id", idDto);
+
+    if (error)
+      throw new InternalServerErrorException(
+        'Xóa nhật bữa ăn: ' + error.message,
+      );
+    return { code: 200, success: true, message: 'Xóa bữa ăn thành công' };
   }
 
   async createMany(createUserMealDto: CreateMealDto[]) {
