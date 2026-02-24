@@ -9,7 +9,12 @@ import {
   UseGuards, Req,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { CreateUserDto, LoginUserDto } from './dto/create-user.dto';
+import {
+  CreateUserDto,
+  LoginUserDto,
+  mailDto,
+  sendOtpDto,
+} from './dto/create-user.dto';
 import { ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { AuthGuard } from '../guard/auth.guard';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -39,6 +44,17 @@ export class UsersController {
   @ApiOperation({ summary: 'Đăng xuất' })
   signout() {
     return this.usersService.signout();
+  }  
+  
+  @Post('otp')
+  @ApiOperation({ summary: 'Lấy otp để reset password' })
+  sendOpt(@Body() email: mailDto) {
+    return this.usersService.handleSendOtp(email);
+  }  
+  @Post('reset')
+  @ApiOperation({ summary: 'reset password' })
+  reset(@Body() reset: sendOtpDto) {
+    return this.usersService.resetPassword(reset);
   }
 
   @Get('profile')

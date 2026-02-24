@@ -63,3 +63,23 @@ export class BanUserDto {
   reason?: string;
 }
 
+export class sendOtpDto {
+  @IsString()
+  @ApiProperty({ example: '123456' })
+  otp: string;
+
+  @IsEmail({}, { message: 'Phải là dạng mail' })
+  @ApiProperty({ example: 'lamm5937@gmail.com' })
+  gmail: string;
+
+  @IsString()
+  @ApiProperty({ example: '123456' })
+  password: string;
+}
+
+export class mailDto {
+  @IsEmail({}, {message: "Phải là dạng mail"})
+  @ApiProperty({ example: 'lamm5937@gmail.com' })
+  gmail: string;
+}
+
