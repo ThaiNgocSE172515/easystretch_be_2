@@ -21,7 +21,6 @@ export class AiService {
       connectionString: configService.get<string>('DATABASE_URL'),
       ssl: { rejectUnauthorized: false },
     });
-    this.pool.connect();
   }
 
   sql = `TABLE public.course_day_exercises (
