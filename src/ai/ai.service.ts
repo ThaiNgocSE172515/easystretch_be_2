@@ -196,4 +196,27 @@ export class AiService {
       };
     }
   }
+
+  async questionNutrition(question: CreateAiDto) {
+
+    const prompt =`Bạn là chuyên gia dinh dưỡng bạn đang làm nhiệm vụ đưa ra gợi ý thức ăn dưa trên câu hỏi ${question.question} của user
+                   QUAN TRỌNG
+                   - Không trả lời câu hỏi ngoài việc liên quan dinh dưỡng nếu hõi không liên quan bạn trả lời tôi không có dữ liệu liên quan
+                   - Trã lời dạng plain text không phải dạng markdown
+                   `;
+
+    const rs = await this.grog.chat.completions.create({
+      model: 'meta-llama/llama-4-scout-17b-16e-instruct',
+      messages: [{ role: 'user', content: prompt }],
+      temperature: 0,
+      max_completion_tokens: 1024,
+      top_p: 1,
+      stream: false,
+    });
+    console.log('DB response:', rs.choices[0].message.content?.trim());
+    return {
+      answer: rs.choices[0].message.content?.trim(),
+    }
+
+  };
 }

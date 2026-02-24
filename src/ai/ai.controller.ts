@@ -26,4 +26,9 @@ export class AiController {
   async question(@Body() question: CreateAiDto) {
     return this.aiService.question(question);
   }
+  @Post('question/nutritionist')
+  @ApiOkResponse({ description: 'Hỏi chat về hệ thống'})
+  async questionNutrition(@Body() question: CreateAiDto) {
+    return this.aiService.questionNutrition(question);
+  }
 }
