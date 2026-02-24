@@ -102,7 +102,11 @@ export class CoursesService {
       .maybeSingle();
 
     if (error) throw new InternalServerErrorException(error.message);
-    return data;
+    return {
+      data: data,
+      success: true,
+      code: 200
+    };
   }
 
   getBoughtCourse(userId: string) {

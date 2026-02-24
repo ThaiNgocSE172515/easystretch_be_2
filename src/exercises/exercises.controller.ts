@@ -7,7 +7,7 @@ import {
   Param,
   Delete,
   Put,
-  UseGuards, Req,
+  UseGuards,
 } from '@nestjs/common';
 import { ExercisesService } from './exercises.service';
 import { CreateExerciseDto } from './dto/create-exercise.dto';
@@ -24,7 +24,8 @@ export class ExercisesController {
   @UseGuards(AuthGuard, RolesGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: '[ADMIN] Taọ execercise phía Admin' })
-  create(@Body() createExerciseDto: CreateExerciseDto, @Req() req) {
+  create(@Body() createExerciseDto: CreateExerciseDto
+  ) {
     return this.exercisesService.create(createExerciseDto);
   }
 

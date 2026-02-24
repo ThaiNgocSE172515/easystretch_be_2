@@ -97,7 +97,11 @@ export class UsersService {
     if (error) {
       throw new BadRequestException('Lấy danh sách user khônng thành công');
     }
-    return ApiResponse.success(data, 'Lấy Danh sách user thành công', 200);
+    return {
+      data: data,
+      success: true,
+      code: 200,
+    };
   }
 
 
