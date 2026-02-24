@@ -19,6 +19,7 @@ export class AiService {
     });
     this.pool = new Pool({
       connectionString: configService.get<string>('DATABASE_URL'),
+      ssl: { rejectUnauthorized: false },
     });
     this.pool.connect();
   }
@@ -150,10 +151,6 @@ export class AiService {
 );`;
 
   async question(question: CreateAiDto) {
-    const supabase = this.supabaseService.getClient();
-    const { data: userData, error: userError } = await supabase
-      .from('profiles')
-      .select('*');
     const prompt = `
       Bạn là một chuyên gia PostgreSQL. Dựa vào cấu trúc Database sau:
       ${this.sql};
@@ -177,7 +174,7 @@ export class AiService {
     const sqlQuery = rs.choices[0].message.content.trim();
     console.log('AI generated SQL:', sqlQuery);
     try {
-      const db = await this.pool.query(sqlQuery, {ssl: { rejectUnauthorized: false }});
+      const db = await this.pool.query(sqlQuery);
 
       const prompt = `bạn là 1 quản lý hệ thống, bạn sẽ trả lời gắn gọn dựa trên ${question.question} và ${JSON.stringify(db.rows)} trả lời gắn gọn súc tích tuyệt đối không dùng markdown`;
       const rs = await this.grog.chat.completions.create({
