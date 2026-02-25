@@ -9,6 +9,12 @@ import {
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export class CreateFoodDto {
+
+  @IsUUID()
+  @ApiProperty({
+    example: "2758a251-ccf1-47de-981f-62a068c94822",
+  })
+  user_id: string;
   @IsString()
   @ApiProperty({
     example: 'Ức gà luộc',
@@ -67,7 +73,22 @@ export class CreateFoodDto {
 export class IdDto {
   @IsUUID()
   @ApiProperty({
+    example: 'f801accd-4117-4a78-a9d3-9c79c6c7458f',
+  })
+  user_id: string;
+
+  @IsUUID()
+  @ApiProperty({
     example: '123e4567-e89b-12d3-a456-426614174000',
   })
   id: string;
+}
+
+
+export class UserIdDto {
+  @IsUUID()
+  @ApiProperty({
+    example: '123e4567-e89b-12d3-a456-426614174000',
+  })
+  user_id: string;
 }

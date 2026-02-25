@@ -1,5 +1,9 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
-import { CreateFoodDto, IdDto } from './dto/create-food.dto';
+import {
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
+import { CreateFoodDto, IdDto, UserIdDto } from './dto/create-food.dto';
 import { SupabaseService } from '../supabase/supabase.service';
 import { UpdateFoodDto } from './dto/update-food.dto';
 
@@ -21,6 +25,7 @@ export class FoodsService {
       );
     return { code: 200, success: true, message: 'Thêm món ăn thành công', data };
   }
+
   async update(id: string, updateFoodDto: UpdateFoodDto) {
     const { data, error } = await this.supabaseService
       .getClient()
@@ -39,13 +44,17 @@ export class FoodsService {
   async delete(idDto: IdDto) {
     const { data, error } = await this.supabaseService
       .getClient()
-      .from('foods').delete().eq("id", idDto);
+      .from('foods').delete().eq("id", idDto.id).eq("user_id", idDto.user_id).select();
 
     if (error)
       throw new InternalServerErrorException(
         'Xóa nhật thức ăn: ' + error.message,
       );
-    return { code: 200, success: true, message: 'Xóa thức ăn thành công' };
+    if (!data || data.length === 0) {
+      throw new NotFoundException('Không tìm thấy thức ăn để xóa');
+    }
+
+    return { code: 200, success: true, message: 'Xóa thức ăn thành công', data };
   }
 
   async createMany(createFoodDto: CreateFoodDto[]) {
@@ -67,28 +76,31 @@ export class FoodsService {
     };
   }
 
-  async findAll() {
+
+  async findAll(id: string) {
     const { data, error } = await this.supabaseService
       .getClient()
       .from('foods')
-      .select('*');
+      .select('*').eq("user_id", id);
 
     if (error) throw new InternalServerErrorException(error.message);
+
     return {
       code: 200,
       success: true,
       message: 'tìm món ăn thành công',
-      data
+      id: id,
+      data,
     };
   }
 
-  async findOne(id: string) {
+  async findOne(idDto: IdDto) {
     const { data, error } = await this.supabaseService
       .getClient()
       .from('foods')
       .select('*')
-      .eq('id', id)
-      .single();
+      .eq('id', idDto.id).eq("user_id", idDto.user_id)
+      .maybeSingle();
 
     if (error) throw new InternalServerErrorException(error.message);
     return {
