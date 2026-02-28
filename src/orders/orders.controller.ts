@@ -29,6 +29,7 @@ export class OrdersController {
   findAll() {
     return this.ordersService.findAll();
   }
+
   @Get('/date')
   @ApiBearerAuth()
   @UseGuards(AuthGuard, AdminGuard)
@@ -65,7 +66,29 @@ export class OrdersController {
   @ApiOperation({
     summary: '[Admin] xem thông tin order theo id',
   })
-  findOne(@Param('id') id: string) {
+
+  update(@Param('id') id: string) {
     return this.ordersService.findOne(id);
+  }
+
+  // @Delete(':id')
+  // @ApiBearerAuth()
+  // @UseGuards(AuthGuard, AdminGuard)
+  // @ApiOperation({
+  //   summary: '[Admin] Xóa thông tin order theo id',
+  // })
+  //
+  // delete(@Param('id') id: string) {
+  //   return this.ordersService.delete(id);
+  // }
+
+  @Patch(':id')
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard, AdminGuard)
+  @ApiOperation({
+    summary: '[Admin] cập nhật trạng thái order theo id',
+  })
+  findOne(@Param('id') id: string, @Body() updateOrderDto: UpdateOrderDto) {
+    return this.ordersService.update(id, updateOrderDto);
   }
 }

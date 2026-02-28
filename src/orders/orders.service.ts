@@ -34,6 +34,34 @@ export class OrdersService {
       data: data,
     };
   }
+  async delete(id: string) {
+    const supabase = this.supabaseService.getClient();
+    const { data, error } = await supabase
+      .from('orders')
+      .delete()
+      .eq('id', id).select("*");
+
+    if (error) throw new BadRequestException(error.message);
+
+    return {
+      success: true,
+      message: `xóa order bẳng id: ${id} thành công`,
+      data: data,
+    };
+  }
+  async update(id: string, update: UpdateOrderDto) {
+    const supabase = this.supabaseService.getClient();
+    const { data, error } = await supabase
+      .from('orders')
+      .update({status: update.status})
+      .eq('id', id).select("*");
+    if (error) throw new BadRequestException(error.message);
+    return {
+      success: true,
+      message: `Cập nhật order bẳng id: ${id} thành công`,
+      data: data,
+    };
+  }
 
   async findByDate(findByDateDto: findByDateDto) {
     const supabase = this.supabaseService.getClient();
