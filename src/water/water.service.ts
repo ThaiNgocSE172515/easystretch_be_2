@@ -1,6 +1,14 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import { SupabaseService } from '../supabase/supabase.service';
-import { UpdateWaterSettingDto, CreateWaterLogDto } from './dto/create-water.dto';
+import {
+  UpdateWaterSettingDto,
+  CreateWaterLogDto,
+  GetLogsDto,
+} from './dto/create-water.dto';
 
 @Injectable()
 export class WaterService {
@@ -123,6 +131,43 @@ export class WaterService {
       consumed_ml: totalConsumed,
       percentage: Math.min(Math.round((totalConsumed / goal) * 100), 100),
       is_goal_reached: totalConsumed >= goal,
+    };
+  }
+
+  async getWaterLogs(userId: string) {
+    const supabase = this.supabaseService.getClient();
+    const { data: logs, error } = await supabase
+      .from('water_logs')
+      .select('*')
+      .eq('user_id', userId)
+    if(error) throw new BadRequestException(error.message);
+    return {
+      code: 200,
+      success: true,
+      message: "Lấy danh sách nước uống theo id user thành công",
+      data: logs,
+    };
+  }
+
+  async getDailyWaterLogs(userId: string, date: GetLogsDto) {
+    const supabase = this.supabaseService.getClient();
+    const dateTmp = new Date(date.date).toISOString().split('T')[0];
+    const startDate = dateTmp + 'T00:00:00Z';
+    const endDate = dateTmp + 'T23:59:59Z';
+
+    const { data: logs, error } = await supabase
+      .from('water_logs')
+      .select('*')
+      .eq('user_id', userId)
+      .gte('consumed_at', startDate)
+      .lte('consumed_at', endDate);
+
+    if (error) throw new BadRequestException(error.message);
+    return {
+      code: 200,
+      success: true,
+      message: 'Lấy danh sách nước uống theo id user thành công',
+      data: logs,
     };
   }
 }

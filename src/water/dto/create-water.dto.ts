@@ -1,4 +1,11 @@
-import { IsInt, IsUUID, IsString, IsOptional, Matches } from 'class-validator';
+import {
+  IsInt,
+  IsUUID,
+  IsString,
+  IsOptional,
+  Matches,
+  IsDate,
+} from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class UpdateWaterSettingDto {
@@ -48,4 +55,12 @@ export class CreateWaterLogDto {
   @ApiProperty({ description: 'Lượng nước vừa uống (ml)', example: 250 })
   @IsInt()
   amount_ml: number;
+}
+
+export class GetLogsDto {
+  @ApiProperty({
+    description: "2026-02-28"
+  })
+  @IsDate({ message: 'Date must be a valid date' })
+  date: Date;
 }
