@@ -15,8 +15,8 @@ export class RolesGuard implements CanActivate {
   ): Promise<boolean>{
     const request = context.switchToHttp().getRequest();
     const user = request.user;
-    if(user.user_metadata.role !== 'admin'){
-      throw new ForbiddenException('Chỉ admin mới có quyền truy cập');
+    if(user.user_metadata.role !== 'admin' && user.user_metadata.role !== 'manager'){
+      throw new ForbiddenException('Chỉ admin và manager mới có quyền truy cập');
     }
     return true;
   }

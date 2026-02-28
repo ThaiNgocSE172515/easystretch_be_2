@@ -23,7 +23,7 @@ export class CoursesController {
   @Post()
   @ApiOperation({
     summary:
-      '[admin] Tạo courses phía admin (phase_number có nhiều week_number, week_number có 7 day_number)',
+      '[ADMIN, MANAGER] Tạo courses phía Admin và Manager (phase_number có nhiều week_number, week_number có 7 day_number)',
   })
   @UseGuards(AuthGuard, RolesGuard)
   @ApiBearerAuth()
@@ -34,7 +34,7 @@ export class CoursesController {
   @Get()
   @ApiOperation({
     summary:
-      '[admin: quản lý][user: hiển thị] hiển thị danh sách course phía admin và user',
+      '[ADMIN, MANAGER, USER] hiển thị danh sách course phía admin và user',
   })
   findAll() {
     return this.coursesService.findAll();
@@ -51,7 +51,7 @@ export class CoursesController {
   }
 
   @ApiOperation({
-    summary: '[admin: quản lý] hiển thị course theo id phía admin',
+    summary: '[ADMIN, MANAGER] hiển thị course theo id phía Admin và Manager',
   })
   @UseGuards(AuthGuard, RolesGuard)
   @ApiBearerAuth()
@@ -69,6 +69,4 @@ export class CoursesController {
   findOneByPayment(@Param('course_id') id: string) {
     return this.coursesService.findOne(id);
   }
-
-
 }

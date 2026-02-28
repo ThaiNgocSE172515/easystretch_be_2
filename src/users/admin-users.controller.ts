@@ -14,12 +14,11 @@ import { BanUserDto } from './dto/create-user.dto';
 
 @Controller('admin-users')
 export class AdminUsersController {
-  constructor(private readonly usersService: UsersService) {
-  }
+  constructor(private readonly usersService: UsersService) {}
 
-  @Get("users")
+  @Get('users')
   @ApiOperation({
-    summary: "Lấy danh sách tất cả người dùng"
+    summary: '[ADMIN, MANAGER] Lấy danh sách tất cả người dùng',
   })
   @UseGuards(AuthGuard, RolesGuard)
   @ApiBearerAuth()
@@ -27,22 +26,20 @@ export class AdminUsersController {
     return this.usersService.findAll();
   }
 
-  @Post("ban/:id")
-  @ApiOperation({summary: "Ban người dùng vi phạm"})
+  @Post('ban/:id')
+  @ApiOperation({ summary: '[ADMIN, MANAGER] Ban người dùng vi phạm' })
   @UseGuards(AuthGuard, RolesGuard)
   @ApiBearerAuth()
-  banUser(@Param("id") id: string,@Body() banUserDto: BanUserDto ) {
+  banUser(@Param('id') id: string, @Body() banUserDto: BanUserDto) {
     return this.usersService.ban(id, banUserDto);
   }
 
-  @Post("unban/:id")
-  @ApiOperation({summary: "Bỏ ban người dùng vi phạm"})
+  @Post('unban/:id')
+  @ApiOperation({ summary: '[ADMIN, MANAGER] Bỏ ban người dùng vi phạm' })
   @UseGuards(AuthGuard, RolesGuard)
   @ApiBearerAuth()
-  unbanUser(@Param("id") id: string ) {
+  unbanUser(@Param('id') id: string) {
     return this.usersService.unban(id);
   }
-
-
 }
 

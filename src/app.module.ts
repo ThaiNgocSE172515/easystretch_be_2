@@ -12,9 +12,10 @@ import { MealsModule } from './meals/meals.module';
 import { WaterModule } from './water/water.module';
 import { PayosPaymentModule } from './payos_payment/payos_payment.module';
 import { AiModule } from './ai/ai.module';
+import { OrdersModule } from './orders/orders.module';
 
 @Module({
-  imports: [ConfigModule.forRoot({ isGlobal: true }),SupabaseModule, UsersModule, GuardModule, ExercisesModule, CoursesModule, FoodsModule, MealsModule, WaterModule, PayosPaymentModule, AiModule],
+  imports: [ConfigModule.forRoot({ isGlobal: true }),SupabaseModule, UsersModule, GuardModule, ExercisesModule, CoursesModule, FoodsModule, MealsModule, WaterModule, PayosPaymentModule, AiModule, OrdersModule],
   controllers: [AppController],
   providers: [AppService],
 })

@@ -18,33 +18,32 @@ import { RolesGuard } from '../guard/roles.guard';
 
 @Controller('exercises')
 export class ExercisesController {
-  constructor(private readonly exercisesService: ExercisesService) { }
+  constructor(private readonly exercisesService: ExercisesService) {}
 
   @Post()
   @UseGuards(AuthGuard, RolesGuard)
   @ApiBearerAuth()
-  @ApiOperation({ summary: '[ADMIN] Taọ execercise phía Admin' })
-  create(@Body() createExerciseDto: CreateExerciseDto
-  ) {
+  @ApiOperation({ summary: '[ADMIN, MANAGER] Taọ execercise phía Admin và Manager' })
+  create(@Body() createExerciseDto: CreateExerciseDto) {
     return this.exercisesService.create(createExerciseDto);
   }
   @Delete(':id')
   @UseGuards(AuthGuard, RolesGuard)
   @ApiBearerAuth()
-  @ApiOperation({ summary: '[ADMIN] Delete execercise bằng exercise id phía Admin' })
-  delete(@Param('id') id: string
-  ) {
+  @ApiOperation({
+    summary: '[ADMIN, MANAGER] Delete execercise bằng exercise id phía Admin và Manager',
+  })
+  delete(@Param('id') id: string) {
     return this.exercisesService.delete(id);
   }
 
-  @Get("client")
+  @Get('client')
   @UseGuards(AuthGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: '[User] Tìm tất execercise phía User' })
   findAllUser() {
     return this.exercisesService.findAll();
   }
-
 
   @Get('client/:id')
   @UseGuards(AuthGuard)
@@ -57,18 +56,15 @@ export class ExercisesController {
   @Get()
   @UseGuards(AuthGuard, RolesGuard)
   @ApiBearerAuth()
-  @ApiOperation({ summary: '[ADMIN] Tìm tất execercise phía Admin' })
+  @ApiOperation({ summary: '[ADMIN, MANAGER] Tìm tất execercise phía Admin và Manager' })
   findAll() {
     return this.exercisesService.findAll();
   }
 
-
-
-
   @Put(':id')
   @UseGuards(AuthGuard, RolesGuard)
   @ApiBearerAuth()
-  @ApiOperation({ summary: '[ADMIN] Cập nhật execercise phía Admin' })
+  @ApiOperation({ summary: '[ADMIN, MANAGER] Cập nhật execercise phía Admin và Manager' })
   update(
     @Param('id') id: string,
     @Body() updateExerciseDto: UpdateExerciseDto,
@@ -79,12 +75,10 @@ export class ExercisesController {
   @Get(':id')
   @UseGuards(AuthGuard, RolesGuard)
   @ApiBearerAuth()
-  @ApiOperation({ summary: '[ADMIN] Tìm execercise bằng id phía Admin' })
+  @ApiOperation({
+    summary: '[ADMIN, MANAGER] Tìm execercise bằng id phía admin và user',
+  })
   findOne(@Param('id') id: string) {
     return this.exercisesService.findOne(id);
   }
-
-
-
-
 }

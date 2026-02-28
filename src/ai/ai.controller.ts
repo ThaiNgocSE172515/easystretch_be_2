@@ -22,12 +22,12 @@ export class AiController {
   @Post('question')
   @UseGuards(AuthGuard, RolesGuard)
   @ApiBearerAuth()
-  @ApiOkResponse({ description: 'Hỏi chat về hệ thống'})
+  @ApiOkResponse({ description: '[ADMIN, MANAGER]Hỏi chat về hệ thống' })
   async question(@Body() question: CreateAiDto) {
     return this.aiService.question(question);
   }
   @Post('question/nutritionist')
-  @ApiOkResponse({ description: 'Hỏi chat về hệ thống'})
+  @ApiOkResponse({ description: 'Hỏi chat về hệ thống' })
   async questionNutrition(@Body() question: CreateAiDto) {
     return this.aiService.questionNutrition(question);
   }
