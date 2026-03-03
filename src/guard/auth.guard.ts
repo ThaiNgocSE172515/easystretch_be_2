@@ -4,7 +4,6 @@ import {
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
-import { Observable } from 'rxjs';
 import { SupabaseService } from '../supabase/supabase.service';
 
 @Injectable()

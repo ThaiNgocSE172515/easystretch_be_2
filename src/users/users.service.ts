@@ -29,7 +29,6 @@ export class UsersService {
       email,
       password,
       options: {
-        // Lưu các thông tin bổ sung vào metadata
         data: { full_name, role: finalRole },
       },
     });

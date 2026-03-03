@@ -23,7 +23,8 @@ async function bootstrap() {
     ],
   };
 
-  SwaggerModule.setup('api-docs', app, document, customOptions);  const configService = app.get(ConfigService);
+  SwaggerModule.setup('api-docs', app, document, customOptions);
+  const configService = app.get(ConfigService);
   const post: number = configService.get<number>('PORT') || 3000;
   await app.listen(post);
 }
