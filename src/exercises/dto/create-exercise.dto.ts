@@ -36,4 +36,10 @@ export class CreateExerciseDto {
     example: ["https://i.ytimg.com/vi/09-09-09/maxresdefault.jpg"]
   })
   img_list?: string[];
+
+  @IsString()
+  @ApiProperty({
+    example: "Tập giản cơ"
+  })
+  type: string;
 }

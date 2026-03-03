@@ -20,6 +20,8 @@ export class CoursesService {
           title: createCourseDto.title,
           description: createCourseDto.description,
           level: createCourseDto.level,
+          price: createCourseDto.price,
+          img_url: createCourseDto.img_url
         },
       ])
       .select()
