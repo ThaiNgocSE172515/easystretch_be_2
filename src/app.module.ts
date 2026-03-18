@@ -13,9 +13,10 @@ import { WaterModule } from './water/water.module';
 import { PayosPaymentModule } from './payos_payment/payos_payment.module';
 import { AiModule } from './ai/ai.module';
 import { OrdersModule } from './orders/orders.module';
+import { MissionsModule } from './missions/missions.module';
 
 @Module({
-  imports: [ConfigModule.forRoot({ isGlobal: true }),SupabaseModule, UsersModule, GuardModule, ExercisesModule, CoursesModule, FoodsModule, MealsModule, WaterModule, PayosPaymentModule, AiModule, OrdersModule],
+  imports: [ConfigModule.forRoot({ isGlobal: true }),SupabaseModule, UsersModule, GuardModule, ExercisesModule, CoursesModule, FoodsModule, MealsModule, WaterModule, PayosPaymentModule, AiModule, OrdersModule, MissionsModule],
   controllers: [AppController],
   providers: [AppService],
 })

@@ -58,6 +58,12 @@ export class UsersController {
     return this.usersService.resetPassword(reset);
   }
 
+  @Get('leaderboard')
+  @ApiOperation({ summary: 'Bảng xếp hạng' })
+  getLeaderboard() {
+    return this.usersService.getLeaderboard();
+  }
+
   @Get('profile')
   @ApiOperation({summary: "Lấy thông tin cá nhân "})
   @UseGuards(AuthGuard)

@@ -123,6 +123,25 @@ export class UsersService {
     };
   }
 
+  async getLeaderboard() {
+    const supabase = this.supabaseService.getClient();
+    const { data, error } = await supabase
+      .from('profiles')
+      .select('id, full_name, avatar_url, current_point')
+      .order('current_point', { ascending: false })
+      .limit(10);
+      
+    if (error) {
+      throw new BadRequestException('Lấy bảng xếp hạng không thành công');
+    }
+    return {
+      success: true,
+      code: 200,
+      message: 'Lấy bảng xếp hạng thành công',
+      data: data,
+    };
+  }
+
   async ban(id: string, banUserDTO: BanUserDto) {
     const supabase = this.supabaseService.getClient();
     let duration = 0;
