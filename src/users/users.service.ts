@@ -142,6 +142,27 @@ export class UsersService {
     };
   }
 
+  async getCurrentPoint(userId: string) {
+    const supabase = this.supabaseService.getClient();
+    const { data, error } = await supabase
+      .from('profiles')
+      .select('current_point')
+      .eq('id', userId)
+      .maybeSingle();
+      
+    if (error) {
+      throw new BadRequestException('Lấy điểm số không thành công');
+    }
+    return {
+      success: true,
+      code: 200,
+      message: 'Lấy điểm số thành công',
+      data: {
+        current_point: data?.current_point || 0
+      },
+    };
+  }
+
   async ban(id: string, banUserDTO: BanUserDto) {
     const supabase = this.supabaseService.getClient();
     let duration = 0;

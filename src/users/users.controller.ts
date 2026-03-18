@@ -64,6 +64,14 @@ export class UsersController {
     return this.usersService.getLeaderboard();
   }
 
+  @Get('current-point')
+  @ApiOperation({ summary: 'Lấy điểm hiện tại của user' })
+  @UseGuards(AuthGuard)
+  @ApiBearerAuth()
+  getCurrentPoint(@Req() req) {
+    return this.usersService.getCurrentPoint(req.user.id);
+  }
+
   @Get('profile')
   @ApiOperation({summary: "Lấy thông tin cá nhân "})
   @UseGuards(AuthGuard)
