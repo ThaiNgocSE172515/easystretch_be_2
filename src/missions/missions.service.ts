@@ -1,7 +1,9 @@
 import { Injectable, InternalServerErrorException, BadRequestException, NotFoundException, Logger } from '@nestjs/common';
 import { SupabaseService } from '../supabase/supabase.service';
 import { CreateMissionDto } from './dto/create-mission.dto';
+import { UpdateMissionDto } from './dto/update-mission.dto';
 import { AddMissionExerciseDto } from './dto/add-mission-exercise.dto';
+import { UpdateMissionExerciseDto } from './dto/update-mission-exercise.dto';
 import { CompleteMissionExerciseDto } from './dto/complete-mission-exercise.dto';
 
 @Injectable()
@@ -178,6 +180,84 @@ export class MissionsService {
       success: true,
       message: `Bạn đã hoàn thành bài tập và được cộng ${missionEx.point} điểm!`,
       data: { current_point: newPoint },
+    };
+  }
+
+  async update(id: string, updateMissionDto: UpdateMissionDto) {
+    const supabase = this.supabaseService.getClient();
+    const { data, error } = await supabase
+      .from('missions')
+      .update(updateMissionDto)
+      .eq('id', id)
+      .select();
+
+    if (error) throw new InternalServerErrorException(error.message);
+    if (!data || data.length === 0) throw new NotFoundException('Không tìm thấy nhiệm vụ');
+
+    return {
+      code: 200,
+      success: true,
+      message: 'Cập nhật nhiệm vụ thành công',
+      data: data[0],
+    };
+  }
+
+  async remove(id: string) {
+    const supabase = this.supabaseService.getClient();
+    const { data, error } = await supabase
+      .from('missions')
+      .delete()
+      .eq('id', id)
+      .select();
+
+    if (error) throw new InternalServerErrorException(error.message);
+    if (!data || data.length === 0) throw new NotFoundException('Không tìm thấy nhiệm vụ');
+
+    return {
+      code: 200,
+      success: true,
+      message: 'Xóa nhiệm vụ thành công',
+      data: data[0],
+    };
+  }
+
+  async updateExercise(missionId: string, exerciseId: string, updateMissionExerciseDto: UpdateMissionExerciseDto) {
+    const supabase = this.supabaseService.getClient();
+    const { data, error } = await supabase
+      .from('mission_exercises')
+      .update(updateMissionExerciseDto)
+      .eq('mission_id', missionId)
+      .eq('exercise_id', exerciseId)
+      .select();
+
+    if (error) throw new InternalServerErrorException(error.message);
+    if (!data || data.length === 0) throw new NotFoundException('Không tìm thấy bài tập trong nhiệm vụ này');
+
+    return {
+      code: 200,
+      success: true,
+      message: 'Cập nhật bài tập trong nhiệm vụ thành công',
+      data: data[0],
+    };
+  }
+
+  async removeExercise(missionId: string, exerciseId: string) {
+    const supabase = this.supabaseService.getClient();
+    const { data, error } = await supabase
+      .from('mission_exercises')
+      .delete()
+      .eq('mission_id', missionId)
+      .eq('exercise_id', exerciseId)
+      .select();
+
+    if (error) throw new InternalServerErrorException(error.message);
+    if (!data || data.length === 0) throw new NotFoundException('Không tìm thấy bài tập trong nhiệm vụ này');
+
+    return {
+      code: 200,
+      success: true,
+      message: 'Xóa bài tập khỏi nhiệm vụ thành công',
+      data: data[0],
     };
   }
 }
