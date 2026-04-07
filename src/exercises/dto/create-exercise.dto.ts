@@ -17,8 +17,8 @@ export class CreateExerciseDto {
 
   @IsUrl()
   @IsOptional()
-  @ApiProperty({example: "https://www.youtube.com/watch?v=09-09-09"})
-  video_url?: string;
+  @ApiProperty({ example: ["https://www.youtube.com/watch?v=09-09-09", "https://www.youtube.com/watch?v=09-09-09"] })
+  video_url?: string[];
 
   @IsInt()
   @ApiProperty({ example: 10 })
@@ -39,7 +39,7 @@ export class CreateExerciseDto {
 
   @IsString()
   @ApiProperty({
-    example: "Tập giản cơ"
+    example: "free"
   })
   type: string;
 }
