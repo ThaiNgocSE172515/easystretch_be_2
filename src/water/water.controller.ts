@@ -19,7 +19,7 @@ import { RolesGuard } from '../guard/roles.guard';
 
 @Controller('water')
 export class WaterController {
-  constructor(private readonly waterService: WaterService) {}
+  constructor(private readonly waterService: WaterService) { }
 
   @Post('settings')
   @ApiOperation({
@@ -30,6 +30,18 @@ export class WaterController {
   @ApiBearerAuth()
   updateSettings(@Body() dto: UpdateWaterSettingDto) {
     return this.waterService.updateSettings(dto);
+  }
+
+  
+  @Get(':user_id')
+  @ApiOperation({
+    summary:
+      '[User] Lấy mục tiêu nước uống',
+  })
+  @UseGuards(AuthGuard)
+  @ApiBearerAuth()
+  getWaterSetting(@Param("user_id") user_id: string) {
+    return this.waterService.getWaterSetting(user_id);
   }
 
   @Post('log')

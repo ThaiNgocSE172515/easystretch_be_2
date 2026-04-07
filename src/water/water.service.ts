@@ -9,10 +9,11 @@ import {
   CreateWaterLogDto,
   GetLogsDto,
 } from './dto/create-water.dto';
+import { error } from 'console';
 
 @Injectable()
 export class WaterService {
-  constructor(private readonly supabaseService: SupabaseService) {}
+  constructor(private readonly supabaseService: SupabaseService) { }
 
   // 1. Cập nhật thiết lập & Tạo lịch trình nhắc nhở
   async updateSettings(dto: UpdateWaterSettingDto) {
@@ -85,6 +86,23 @@ export class WaterService {
     };
   }
 
+  async getWaterSetting(user_id: string) {
+    const { data, error } = await this.supabaseService.getClient().from("water_settings").select().eq("user_id", user_id);
+    if (error) {
+      throw new BadRequestException("Không lấy được thiết lập của người dùng ", error.message);
+    }
+
+    if (!data) {
+      return {
+        message: "Người dùng chưa có thiết lập về nước uống"
+      }
+    }
+    return {
+      message: "Lấy Danh sách thành công",
+      data: data
+    }
+  }
+
   // 3. Người dùng bấm nút "Đã uống nước"
   async logWater(dto: CreateWaterLogDto) {
     const { data, error } = await this.supabaseService
@@ -140,7 +158,7 @@ export class WaterService {
       .from('water_logs')
       .select('*')
       .eq('user_id', userId)
-    if(error) throw new BadRequestException(error.message);
+    if (error) throw new BadRequestException(error.message);
     return {
       code: 200,
       success: true,
