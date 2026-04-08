@@ -5,10 +5,18 @@ import {
   IsOptional,
   IsUrl,
   IsUUID,
+  IsArray,
 } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export class CreateFoodDto {
+
+  @IsArray()
+  @IsString({ each: true })
+  @ApiProperty({
+    example: ["tinh bột", "thịt"]
+  })
+  categories: string[];
 
   @IsUUID()
   @ApiProperty({

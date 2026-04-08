@@ -17,7 +17,7 @@ import { AuthGuard } from '../guard/auth.guard';
 
 @Controller('foods')
 export class FoodsController {
-  constructor(private readonly foodsService: FoodsService) {}
+  constructor(private readonly foodsService: FoodsService) { }
 
   @Post()
   @UseGuards(AuthGuard)
@@ -27,13 +27,6 @@ export class FoodsController {
     return this.foodsService.create(createFoodDto);
   }
 
-  @Patch(':id')
-  @UseGuards(AuthGuard)
-  @ApiBearerAuth()
-  @ApiOperation({ summary: '[User] cập nhật mới food phía user' })
-  update(@Param('id') id: string, @Body() updateFoodDto: UpdateFoodDto) {
-    return this.foodsService.update(id, updateFoodDto);
-  }
 
   @Post('/many')
   @ApiOperation({ summary: '[User] tạo mới nhiều food phía user' })
@@ -46,6 +39,18 @@ export class FoodsController {
     return this.foodsService.createMany(createFoodDto);
   }
 
+
+
+
+  @Get()
+  @UseGuards(AuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: '[User] tìm tất cả foods phía user' })
+  findAll(@Req() req: any) {
+    const id = req.user.id;
+    return this.foodsService.findAll(id);
+  }
+
   @Get(':id')
   @UseGuards(AuthGuard)
   @ApiBearerAuth()
@@ -56,8 +61,10 @@ export class FoodsController {
       id: id,
       user_id: user.id,
     };
+
     return this.foodsService.findOne(data);
   }
+
 
   @Delete(':id')
   @UseGuards(AuthGuard)
@@ -72,12 +79,14 @@ export class FoodsController {
     return this.foodsService.delete(data);
   }
 
-  @Get()
+
+  @Patch(':id')
   @UseGuards(AuthGuard)
   @ApiBearerAuth()
-  @ApiOperation({ summary: '[User] tìm tất cả foods phía user' })
-  findAll(@Req() req: any) {
-    const id = req.user.id;
-    return this.foodsService.findAll(id);
+  @ApiOperation({ summary: '[User] cập nhật mới food phía user' })
+  update(@Param('id') id: string, @Body() updateFoodDto: UpdateFoodDto) {
+    return this.foodsService.update(id, updateFoodDto);
   }
 }
+
+
