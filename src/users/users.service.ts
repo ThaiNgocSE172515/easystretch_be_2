@@ -129,7 +129,6 @@ export class UsersService {
       .from('profiles')
       .select('id, full_name, avatar_url, current_point')
       .order('current_point', { ascending: false })
-      .limit(10);
       
     if (error) {
       throw new BadRequestException('Lấy bảng xếp hạng không thành công');
