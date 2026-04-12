@@ -67,7 +67,7 @@ export class PayosPaymentService {
       }
       return paymentLinkResponse;
     } catch (error) {
-      throw new Error(error);
+      throw new BadRequestException(error);
     }
   }
 
@@ -96,7 +96,7 @@ export class PayosPaymentService {
       console.log(orderData);
 
       if (isSuccess && orderData) {
-        if (orderData.course_id == '960e3154-51cd-487a-a8d6-570bb8aa1b27') {
+        if (orderData.course_id == '49414f0c-ea91-4ded-bd2d-3536c2ea82e5') {
           const { data: profileData, error: errorData } =
             await this.supabaseService
               .getClient()
@@ -145,7 +145,7 @@ export class PayosPaymentService {
         }
       }
     } catch (e) {
-      console.error('Webhook Error:', e.message);
+      console.error('Webhook Error:', e);
       throw new BadRequestException('Invalid Webhook Signature');
     }
   }

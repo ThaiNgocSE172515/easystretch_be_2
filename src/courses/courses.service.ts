@@ -2,13 +2,14 @@ import {
   Injectable,
   InternalServerErrorException,
   BadRequestException,
+  NotFoundException,
 } from '@nestjs/common';
 import { CreateCourseDto } from './dto/create-course.dto';
 import { SupabaseService } from '../supabase/supabase.service';
 
 @Injectable()
 export class CoursesService {
-  constructor(private readonly supabaseService: SupabaseService) {}
+  constructor(private readonly supabaseService: SupabaseService) { }
 
   async create(createCourseDto: CreateCourseDto) {
     const supabase = this.supabaseService.getClient();
@@ -113,5 +114,17 @@ export class CoursesService {
 
   getBoughtCourse(userId: string) {
     return this.supabaseService.getClient().from('user_courses').select('*, courses ( * )').eq('user_id', userId);
+  }
+
+  async deleteCouse(id: string) {
+    const { data, error } = await this.supabaseService.getClient().from("courses").delete().eq("id", id);
+    if (error) {
+      throw new NotFoundException("Không tìm thấy course theo id", error.message);
+    }
+
+    return {
+      message: `xóa course với ${id} thành công`,
+      code: 200
+    }
   }
 }
