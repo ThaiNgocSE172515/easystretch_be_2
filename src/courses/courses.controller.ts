@@ -7,6 +7,7 @@ import {
   Param,
   UseGuards,
   Req,
+  Delete,
 } from '@nestjs/common';
 import { CoursesService } from './courses.service';
 import { CreateCourseDto } from './dto/create-course.dto';
@@ -18,7 +19,7 @@ import { CourseGuard } from '../guard/course.guard';
 
 @Controller('courses')
 export class CoursesController {
-  constructor(private readonly coursesService: CoursesService) {}
+  constructor(private readonly coursesService: CoursesService) { }
 
   @Post()
   @ApiOperation({
@@ -29,6 +30,17 @@ export class CoursesController {
   @ApiBearerAuth()
   create(@Body() createCourseDto: CreateCourseDto) {
     return this.coursesService.create(createCourseDto);
+  }
+
+  @Patch(":id")
+  @ApiOperation({
+    summary:
+      '[ADMIN, MANAGER] Tạo courses phía Admin và Manager (phase_number có nhiều week_number, week_number có 7 day_number)',
+  })
+  @UseGuards(AuthGuard, RolesGuard)
+  @ApiBearerAuth()
+  update(@Param("id") id: string,@Body() updateCourseDto: UpdateCourseDto) {
+    return this.coursesService.update(id, updateCourseDto);
   }
 
   @Get()
@@ -68,5 +80,16 @@ export class CoursesController {
   @Get('payment/:course_id')
   findOneByPayment(@Param('course_id') id: string) {
     return this.coursesService.findOne(id);
+  }
+
+
+  @ApiOperation({
+    summary: '[Admin và Management] hiển thị course theo id phía user đã mua',
+  })
+  @UseGuards(AuthGuard, RolesGuard)
+  @ApiBearerAuth()
+  @Delete(':id')
+  deleteCourse(@Param('id') id: string) {
+    return this.coursesService.deleteCouse(id);
   }
 }

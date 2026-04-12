@@ -8,18 +8,26 @@ import {
   Min,
   IsNumber,
   IsUrl,
+  IsEnum,
 } from 'class-validator';
 import { Type } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
+
+
+export enum CourseType {
+  FREE = "free",
+  MEMBER = "member",
+  TOBUY = "toBuy"
+}
 
 class ExerciseInDayDto {
   @IsString()
   @ApiProperty({ example: 'exercise_id_12345' })
   exercise_id: string;
 
-  @IsInt()
-  @ApiProperty({ example: 1 })
-  order_index: number;
+  // @IsInt()
+  // @ApiProperty({ example: 1 })
+  // order_index: number;
 }
 
 
@@ -61,15 +69,14 @@ export class CreateCourseDto {
   @ApiProperty({ example: 'Bài tập giúp làm giảm đau nhứt ở cổ vai' })
   description?: string;
 
-  @IsString()
-  @IsOptional()
-  @ApiProperty({ example: 'beginner' })
-  level?: string; //beginner, intermediate, advanced
+  @IsEnum(CourseType, { message: "type phải là free hoặc member hoặc toBuy" })
+  @ApiProperty({ example: 'free' })
+  type: string; //beginner, intermediate, advanced
 
   @IsNumber()
   @ApiProperty({ example: 50000 })
   price: number;
-  
+
   @IsUrl()
   @ApiProperty({ example: "http://hinhanh.com" })
   img_url: string;
