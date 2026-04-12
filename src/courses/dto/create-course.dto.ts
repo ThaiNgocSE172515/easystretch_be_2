@@ -20,6 +20,11 @@ export enum CourseType {
   TOBUY = "toBuy"
 }
 
+export enum LevelEnum {
+  RECOVER = 'recover',
+  RELAXATION = 'relaxation',
+}
+
 class ExerciseInDayDto {
   @IsString()
   @ApiProperty({ example: 'exercise_id_12345' })
@@ -72,6 +77,11 @@ export class CreateCourseDto {
   @IsEnum(CourseType, { message: "type phải là free hoặc member hoặc toBuy" })
   @ApiProperty({ example: 'free' })
   type: string; //beginner, intermediate, advanced
+  
+
+  @IsEnum(LevelEnum, { message: "level phải là recover or relaxation" })
+  @ApiProperty({ example: 'recover' })
+  level: string; //beginner, intermediate, advanced
 
   @IsNumber()
   @ApiProperty({ example: 50000 })
