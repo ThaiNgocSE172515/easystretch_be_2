@@ -101,6 +101,31 @@ export class CoursesService {
     return data;
   }
 
+  async findAllExercise() {
+    const { data, error } = await this.supabaseService
+      .getClient()
+      .from('courses')
+      .select(
+        `
+        *,
+        course_days (
+          *,
+          course_day_exercises (
+            order_index,
+            exercises (*)
+          )
+        )
+      `,
+      )
+
+    if (error) throw new InternalServerErrorException(error.message);
+    return {
+      success: true,
+      code: 200,
+      data: data
+    };
+  }
+
   async findOne(id: string) {
     const { data, error } = await this.supabaseService
       .getClient()
@@ -122,9 +147,9 @@ export class CoursesService {
 
     if (error) throw new InternalServerErrorException(error.message);
     return {
-      data: data,
       success: true,
-      code: 200
+      code: 200,
+      data: data
     };
   }
 

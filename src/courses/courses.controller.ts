@@ -39,7 +39,7 @@ export class CoursesController {
   })
   @UseGuards(AuthGuard, RolesGuard)
   @ApiBearerAuth()
-  update(@Param("id") id: string,@Body() updateCourseDto: UpdateCourseDto) {
+  update(@Param("id") id: string, @Body() updateCourseDto: UpdateCourseDto) {
     return this.coursesService.update(id, updateCourseDto);
   }
 
@@ -50,6 +50,17 @@ export class CoursesController {
   })
   findAll() {
     return this.coursesService.findAll();
+  }
+
+  @Get("/course-exercise")
+  @ApiOperation({
+    summary:
+      '[ADMIN, MANAGER] hiển thị danh sách course chi tiết có cả ngày, tuần và exercise phía admin và manager',
+  })
+  @UseGuards(AuthGuard, RolesGuard)
+  @ApiBearerAuth()
+  findAllExercise() {
+    return this.coursesService.findAllExercise();
   }
 
   @Get('bought')
@@ -63,7 +74,7 @@ export class CoursesController {
   }
 
   @ApiOperation({
-    summary: '[ADMIN, MANAGER] hiển thị course theo id phía Admin và Manager',
+    summary: '[ADMIN, MANAGER] hiển thị chi tiết theo id (cả exercise, day, tuần trong course) course theo id phía Admin và Manager',
   })
   @UseGuards(AuthGuard, RolesGuard)
   @ApiBearerAuth()
