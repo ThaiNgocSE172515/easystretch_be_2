@@ -85,9 +85,6 @@ export class CreateExerciseDto {
 
   @IsArray()
   @Type(() => TimeLine)
-  @ArrayUnique((timeline: TimeLine) => timeline.imageIndex, {
-    message: "Các phần tử trong timeLine không được có imageIndex trùng nhau"
-  })
   @ApiProperty({
     example: [
       {
