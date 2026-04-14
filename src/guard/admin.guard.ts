@@ -5,11 +5,11 @@ import { Observable } from 'rxjs';
 export class AdminGuard implements CanActivate {
   canActivate(
     context: ExecutionContext,
-  ):  boolean  {
+  ): boolean {
     const request = context.switchToHttp().getRequest();
     const user = request.user;
     const role = user.user_metadata.role;
-    if(role !== 'admin') {
+    if (role !== 'admin') {
       throw new ForbiddenException('Chỉ admin mới có quyền truy cập');
     }
     return true;

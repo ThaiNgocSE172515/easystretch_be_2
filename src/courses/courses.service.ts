@@ -257,4 +257,101 @@ export class CoursesService {
 
     return { message: 'Cập nhật khóa học thành công', course_id: courseId };
   }
+
+  async getCourseFree() {
+    try {
+      const { data, error } = await this.supabaseService.getClient().from("courses").select().eq("type", "free");
+      if (error) {
+        throw new BadRequestException(error.message);
+      }
+      if (!data) {
+        throw new NotFoundException("Không có khóa học free")
+      }
+      return {
+        code: 200,
+        message: "Lấy danh sách khóa học free thành công",
+        data: data
+      }
+    } catch (error) {
+      throw new BadRequestException(error);
+    }
+  }
+
+  async getCourseFreeAllInfoWithId(id: String) {
+    try {
+      const { data, error } = await this.supabaseService.getClient().from("courses").select("*, course_days(*, course_day_exercises(*))").eq("type", "free").eq("id", id).maybeSingle();
+      if (error) {
+        throw new BadRequestException(error.message);
+      }
+      if (!data) {
+        throw new NotFoundException(`Không có khóa học free với id là ${id}`)
+      }
+      return {
+        code: 200,
+        message: "Lấy danh sách khóa học free thành công",
+        data: data
+      }
+    } catch (error) {
+      throw new BadRequestException(error);
+    }
+  }
+
+  async getCourseMember() {
+    try {
+      const { data, error } = await this.supabaseService.getClient().from("courses").select("*, course_days(*, course_day_exercises(*))").eq("type", "member")
+      if (error) {
+        throw new BadRequestException(error.message);
+      }
+      if (!data) {
+        throw new NotFoundException(`Không có khóa học`)
+      }
+      return {
+        code: 200,
+        message: "Lấy danh sách khóa học thành công",
+        data: data
+      }
+    } catch (error) {
+      throw new BadRequestException(error);
+    }
+  }
+
+  async getCourseMemberWithAllInfo(id: string) {
+    try {
+      const { data, error } = await this.supabaseService.getClient().from("courses").select("*, course_days(*, course_day_exercises(*))").eq("type", "member").eq("id", id).maybeSingle();
+      if (error) {
+        throw new BadRequestException(error.message);
+      }
+      if (!data) {
+        throw new NotFoundException(`Không tìm thấy khóa học với id ${id}`);
+      }
+      return {
+        code: 200,
+        message: "Lấy danh sách khóa học thành công",
+        data: data
+      }
+    } catch (error) {
+      throw new BadRequestException(error);
+    }
+  }
+
+  async getCourseWithId(course_id: string) {
+    try {
+      const { data, error } = await this.supabaseService.getClient().from("courses").select("*, course_days(*, course_day_exercises(*))").eq("id", course_id).maybeSingle();
+      if (error) {
+        throw new BadRequestException(error.message);
+      }
+      if (!data) {
+        throw new NotFoundException(`Không có khóa học với id ${course_id}`);
+      }
+
+      return {
+        code: 200,
+        message: "Lấy danh sách khóa học thành công",
+        data: data
+      }
+    } catch (error) {
+      throw new BadRequestException(error)
+    }
+  }
+
 }

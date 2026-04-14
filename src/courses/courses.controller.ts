@@ -16,10 +16,63 @@ import { ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 import { AuthGuard } from '../guard/auth.guard';
 import { RolesGuard } from '../guard/roles.guard';
 import { CourseGuard } from '../guard/course.guard';
+import { MemberGuard } from 'src/guard/member.guard';
+import { UserCourseGuard } from 'src/guard/user_course.guard';
 
 @Controller('courses')
 export class CoursesController {
   constructor(private readonly coursesService: CoursesService) { }
+
+
+
+  @ApiOperation({
+    summary: "[USER] lấy danh sách khóa học free phía user"
+  })
+  @Get("/free")
+  getCourseFree() {
+    return this.coursesService.getCourseFree();
+  }
+
+
+  @ApiOperation({
+    summary: "[USER] lấy danh sách các khóa học member phía user"
+  })
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard, MemberGuard)
+  @Get("/member")
+  getCourseMember() {
+    return this.coursesService.getCourseMember();
+  }
+  @ApiOperation({
+    summary: "[USER] lấy danh sách các khóa học member theo id phía user"
+  })
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard, MemberGuard)
+  @Get("/member/:course_id")
+  getCourseMemberWithAllInfo(@Param("course_id") id: string) {
+    return this.coursesService.getCourseMemberWithAllInfo(id);
+  }
+
+
+
+  @ApiOperation({
+    summary: "[USER] lấy danh sách khóa học free với danh sách exercise theo id phía user"
+  })
+  @Get("/free/:course_id")
+  getCourseFreeAllInfoWithId(@Param("course_id") id: string) {
+    return this.coursesService.getCourseFreeAllInfoWithId(id);
+  }
+
+
+  @ApiOperation({
+    summary: "[USER] lấy thông tin course với cả exercise tổng hợp đã phân quyền theo mua gói và type của course phía user"
+  })
+  @Get("/all/:course_id")
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard, UserCourseGuard)
+  getCourseWithId(@Param("course_id") id: string) {
+    return this.coursesService.getCourseWithId(id);
+  }
 
   @Post()
   @ApiOperation({
@@ -103,4 +156,8 @@ export class CoursesController {
   deleteCourse(@Param('id') id: string) {
     return this.coursesService.deleteCouse(id);
   }
+
+
+
+
 }
