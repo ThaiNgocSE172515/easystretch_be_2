@@ -22,9 +22,11 @@ export class AuthGuard implements CanActivate {
     const token = authHeader.split(' ')[1];
     const supabase = this.supabaseService.getClient();
     const {data: {user}, error} = await  supabase.auth.getUser(token);
+
     if(error || !user) {
-      throw new UnauthorizedException("Token không hợp lệ hoặc đã hết hạn")
+      throw new UnauthorizedException(`Token không hợp lệ hoặc đã hết hạn ${error?.message}`)
     }
+    
     request.user = user;
     return true;
 }}
