@@ -65,7 +65,7 @@ export class CoursesController {
 
 
   @ApiOperation({
-    summary: "[USER] lấy thông tin course với cả exercise tổng hợp đã phân quyền theo mua gói và type của course phía user"
+    summary: "[USER] lấy thông tin course với cả exercise tổng hợp theo Course id đã phân quyền theo mua gói và type của course phía user"
   })
   @Get("/all/:course_id")
   @ApiBearerAuth()
